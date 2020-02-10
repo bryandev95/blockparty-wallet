@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-import Header from './components/Header';
-import Main from './components/Main';
-import OnBoarding from './components/OnBoarding';
+import Header from './containers/Header';
+import Main from './containers/Main';
+import OnBoarding from './containers/OnBoarding';
 import styles from './app.module.scss';
 
 function App() {

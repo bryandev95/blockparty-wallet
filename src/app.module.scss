@@ -1,3 +1,5 @@
+@import 'constants/colors.scss';
+
 .app {
   width: 25rem;
   height: 550px;
@@ -5,7 +7,7 @@
   right: 50px;
   bottom: 20px;
   border-radius: 10px;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
-  background: #fdfdfd;
+  box-shadow: 0 0 6px transparentize($color_black, 0.8);
+  background: $color_light_grey;
   overflow: hidden;
 }

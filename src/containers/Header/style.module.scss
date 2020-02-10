@@ -1,10 +1,12 @@
+@import 'constants/colors.scss';
+
 .header {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #5cbd6d;
-  color: #fff;
-  font-size: 22px;
+  background: $color_green;
+  color: $color_white;
+  font-size: 24px;
   border-radius: 10px 10px 0 0;
   padding: 12px 0;
 

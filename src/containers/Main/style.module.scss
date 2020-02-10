@@ -1,10 +1,12 @@
+@import 'constants/colors.scss';
+
 .container {
   li {
-    width: 50%;
+    width: 25%;
 
     .menuItem {
-      background: #5cbd6d;
-      color: #fff;
+      background: $color_green;
+      color: $color_white;
       border-radius: 0;
       font-size: 14px;
       font-weight: 300;
@@ -12,17 +14,17 @@
       cursor: pointer;
       padding: 7px 2px 4px;
       border: none;
-      border-bottom: 3px solid #5cbd6d;
+      border-bottom: 3px solid $color_green;
 
       &:hover {
-        color: #fff;
+        color: $color_white;
         border: none;
-        border-bottom: 3px solid #888;
+        border-bottom: 3px solid $color_medium_grey;
         opacity: 0.9;
       }
 
       &.active {
-        border-bottom: 3px solid #888;
+        border-bottom: 3px solid $color_medium_grey;
         font-weight: 400;
       }
     }

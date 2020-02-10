@@ -1,5 +1,7 @@
+@import 'constants/colors.scss';
+
 .container {
-  background: #fff;
+  background: $color_white;
   height: 550px;
   width: 100%;
   position: absolute;
@@ -20,18 +22,17 @@
 
     .closeBtn {
       position: absolute;
-      font-size: 30px;
-      right: -5px;
-      top: -5px;
+      font-size: 25px;
+      right: -12px;
       cursor: pointer;
     }
   }
 
   a {
-    color: #039be5;
+    color: $color_blue;
 
     &:hover {
-      color: #039be5;
+      color: $color_blue;
     }
   }
 }

@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "jsx": "react",
+    "checkJs": true,
+    "baseUrl": "./src",
+    "paths": {
+      "components/*": ["components/*"],
+      "containers/*": ["containers/*"],
+      "constants/*": ["constants/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}
