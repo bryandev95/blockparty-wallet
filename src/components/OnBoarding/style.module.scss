@@ -1,0 +1,28 @@
+.container {
+  li {
+    width: 50%;
+
+    .menuItem {
+      background: #5cbd6d;
+      color: #fff;
+      border-radius: 0;
+      font-size: 13px;
+      text-align: center;
+      cursor: pointer;
+      padding: 7px 2px 4px;
+      border: none;
+      border-bottom: 3px solid #5cbd6d;
+
+      &:hover {
+        color: #fff;
+        border: none;
+        border-bottom: 3px solid #888;
+        opacity: 0.9;
+      }
+
+      &.active {
+        border-bottom: 3px solid #888;
+      }
+    }
+  }
+}

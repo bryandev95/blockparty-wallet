@@ -6,14 +6,26 @@
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
+    "bootstrap": "^4.4.1",
+    "classnames": "^2.2.6",
+    "eslint-config-prettier": "^6.10.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "lint-staged": "^10.0.7",
+    "node-sass": "^4.13.1",
+    "pre-commit": "^1.2.2",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-scripts": "3.3.1"
+    "react-scripts": "3.3.1",
+    "reactstrap": "^8.4.1"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build && npm run build:clean",
-    "build:clean": "mv build/static/js/main.*.js build/static/js/blockparty.js && mv build/static/js/2.*.js build/static/js/wallet.js && mv build/static/css/main.*.css build/static/css/blockparty.css",
+    "build:clean": "npm run build:css && npm run build:js",
+    "build:css": "mv build/static/css/main.*.css build/static/css/blockparty.css && mv build/static/css/2.*.css build/static/css/wallet.css",
+    "build:js": "mv build/static/js/main.*.js build/static/js/blockparty.js && mv build/static/js/2.*.js build/static/js/wallet.js",
+    "lint-staged": "echo 'lint-staged' && lint-staged",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -31,5 +43,17 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "pre-commit": [
+    "lint-staged"
+  ],
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "standard": {
+    "parser": "babel-eslint"
   }
 }
