@@ -10,7 +10,7 @@ const QRCode = ({ text }) => {
 
   const handleClick = () => {
     setVisible(true);
-    setTimeout(() => setVisible(false), 3000);
+    setTimeout(() => setVisible(false), 1500);
   };
 
   return (

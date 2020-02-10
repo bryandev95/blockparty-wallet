@@ -51,7 +51,7 @@ const OnBoarding = ({ showInfo, onToggle }) => {
 
 OnBoarding.propTypes = {
   showInfo: PropTypes.bool.isRequired,
-  onToggle: PropTypes.bool.isRequired
+  onToggle: PropTypes.func.isRequired
 };
 
 export default OnBoarding;
