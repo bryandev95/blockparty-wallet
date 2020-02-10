@@ -1,22 +1,18 @@
-import React from 'react';
-import './App.css';
+import React, { useState } from 'react';
+
+import Header from './components/Header';
+import Main from './components/Main';
+import OnBoarding from './components/OnBoarding';
+import styles from './app.module.scss';
 
 function App() {
+  const [isLoggedIn] = useState(false);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className={styles.app}>
+      <Header isLoggedIn={isLoggedIn} />
+
+      {isLoggedIn ? <Main /> : <OnBoarding />}
     </div>
   );
 }
