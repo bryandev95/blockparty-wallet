@@ -2,6 +2,8 @@ import React from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 
+import { MdClose } from 'react-icons/md';
+
 import style from './style.module.scss';
 
 const WalletInfo = ({ showInfo, onToggle }) => {
@@ -9,9 +11,7 @@ const WalletInfo = ({ showInfo, onToggle }) => {
     <div className={cx(style.container, { [style.active]: showInfo })}>
       <h2>
         Help
-        <span className={style.closeBtn} onClick={onToggle}>
-          &times;
-        </span>
+        <MdClose className={style.closeBtn} onClick={onToggle} />
       </h2>
       <p>
         The Blockparty Wallet keeps your private key on your computer. If you don't already have a
@@ -31,7 +31,7 @@ const WalletInfo = ({ showInfo, onToggle }) => {
 
 WalletInfo.propTypes = {
   showInfo: PropTypes.bool.isRequired,
-  onToggle: PropTypes.bool.isRequired
+  onToggle: PropTypes.func.isRequired
 };
 
 export default WalletInfo;
