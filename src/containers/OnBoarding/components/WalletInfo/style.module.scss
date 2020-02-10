@@ -28,11 +28,15 @@
     }
   }
 
-  a {
-    color: $color_blue;
+  p {
+    color: $text_color;
 
-    &:hover {
+    a {
       color: $color_blue;
+  
+      &:hover {
+        color: $color_blue;
+      }
     }
   }
 }
