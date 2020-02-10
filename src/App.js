@@ -7,12 +7,17 @@ import styles from './app.module.scss';
 
 function App() {
   const [isLoggedIn] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
+
+  const toggleShowInfo = () => {
+    setShowInfo(!showInfo);
+  };
 
   return (
     <div className={styles.app}>
-      <Header isLoggedIn={isLoggedIn} />
+      <Header isLoggedIn={isLoggedIn} onToggle={toggleShowInfo} />
 
-      {isLoggedIn ? <Main /> : <OnBoarding />}
+      {isLoggedIn ? <Main /> : <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />}
     </div>
   );
 }

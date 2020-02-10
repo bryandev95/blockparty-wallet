@@ -33,6 +33,7 @@
         ]
       }
     ],
+    "react/no-unescaped-entities": 0,
     "quotes": [
       "error",
       "single"
