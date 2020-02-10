@@ -5,7 +5,13 @@
   background: #5cbd6d;
   color: #fff;
   font-size: 22px;
-  font-weight: 500;
   border-radius: 10px 10px 0 0;
   padding: 12px 0;
+
+  .info {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    cursor: pointer;
+  }
 }

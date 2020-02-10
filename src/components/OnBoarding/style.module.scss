@@ -6,7 +6,8 @@
       background: #5cbd6d;
       color: #fff;
       border-radius: 0;
-      font-size: 13px;
+      font-size: 14px;
+      font-weight: 300;
       text-align: center;
       cursor: pointer;
       padding: 7px 2px 4px;
@@ -22,6 +23,7 @@
 
       &.active {
         border-bottom: 3px solid #888;
+        font-weight: 400;
       }
     }
   }
