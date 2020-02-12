@@ -5,9 +5,10 @@
     "baseUrl": "./src",
     "paths": {
       "components/*": ["components/*"],
+      "constants/*": ["constants/*"],
       "containers/*": ["containers/*"],
-      "constants/*": ["constants/*"]
+      "contexts/*": ["contexts/*"]
     }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "build"]
 }

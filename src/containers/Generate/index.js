@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import { MdFileDownload } from 'react-icons/md';
 import Button from 'components/Button';
@@ -6,9 +7,7 @@ import CopyToClipboard from 'components/CopyToClipboard';
 
 import style from './style.module.scss';
 
-const Generate = () => {
-  const mnemonic = 'news blood output problem catalog area talk boil winner firm grunt surface';
-
+const Generate = ({ mnemonic }) => {
   const handleDownload = () => {
     const fileType = 'text/plain';
     const filename = 'blockparty-wallet-mnemonic.txt';
@@ -47,6 +46,10 @@ const Generate = () => {
       </Button>
     </div>
   );
+};
+
+Generate.propTypes = {
+  mnemonic: PropTypes.string
 };
 
 export default Generate;
