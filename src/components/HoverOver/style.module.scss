@@ -19,6 +19,7 @@
     font-size: 26px;
     margin-bottom: 20px;
     position: relative;
+    font-family: monospace;
 
     .closeBtn {
       position: absolute;
@@ -36,6 +37,40 @@
   
       &:hover {
         color: $color_blue;
+      }
+    }
+  }
+
+  > button span {
+    padding-top: 2px;
+
+    svg {
+      height: 21px;
+      width: 18px;
+      margin-left: 5px;
+      padding-bottom: 1px;
+    }
+  }
+
+  .footer {
+    position: absolute;
+    bottom: 10px;
+
+    label {
+      color: $color_blue;
+      margin-bottom: 0;
+    }
+
+    span {
+      font-size: 13px;
+
+      a {
+        color: $color_blue;
+        margin-left: 10px;
+
+        &:hover {
+          text-decoration: none;
+        }
       }
     }
   }

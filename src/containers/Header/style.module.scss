@@ -6,14 +6,16 @@
   align-items: center;
   background: $color_green;
   color: $color_white;
-  font-size: 24px;
+  font-size: 25px;
+  font-weight: 300;
   border-radius: 10px 10px 0 0;
   padding: 12px 0;
+  font-family: monospace;
 
   .info {
     position: absolute;
     right: 10px;
-    top: 10px;
+    top: 9px;
     cursor: pointer;
   }
 }

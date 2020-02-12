@@ -45,4 +45,13 @@ Button.propTypes = {
   onClick: PropTypes.func
 };
 
+Button.defaultProps = {
+  block: false,
+  color: 'primary',
+  disabled: false,
+  outline: false,
+  round: false,
+  onClick: () => {}
+};
+
 export default Button;
