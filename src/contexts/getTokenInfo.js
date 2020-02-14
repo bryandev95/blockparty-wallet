@@ -1,13 +1,11 @@
-import withSLP from './withSLP';
+import withSLP from 'contexts/withSLP';
 
-const getTokenInfo = async (SLP, slpAddress, tokenId) => {
-  try {
-    const info = await SLP.Utils.list(tokenId);
+const getTokenInfo = async (SLP, tokens) => {
+  const tokenIds = tokens.map(token => token.tokenId);
 
-    return info;
-  } catch (error) {
-    console.error(error);
-  }
+  const tokenList = await SLP.Utils.list(tokenIds);
+
+  return tokenList;
 };
 
 export default withSLP(getTokenInfo);

@@ -11,24 +11,26 @@ import styles from './app.module.scss';
 
 function App() {
   const [showInfo, setShowInfo] = useState(false);
-  const { wallet, tokens, balances, logout } = useContext(WalletContext);
-  console.log('balances', balances);
-  console.log('tokesn', tokens);
+  const { wallet, balances, logout } = useContext(WalletContext);
 
   const toggleShowInfo = () => {
     setShowInfo(!showInfo);
   };
 
   const handleLogout = () => {
-    toggleShowInfo();
     logout();
+    toggleShowInfo();
   };
 
   return (
     <div className={styles.app}>
       <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} />
 
-      {wallet ? <Main /> : <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />}
+      {wallet ? (
+        <Main balances={balances} />
+      ) : (
+        <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />
+      )}
 
       <HoverOver
         isLoggedIn={!!wallet}
