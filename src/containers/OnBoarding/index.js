@@ -18,7 +18,8 @@ const OnBoarding = () => {
 
   useEffect(() => {
     generateMnemonic();
-  }, [generateMnemonic]);
+    // eslint-disable-next-line
+  }, []);
 
   return (
     <div className={style.container}>
