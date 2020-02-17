@@ -97,7 +97,7 @@ const Main = ({ balances }) => {
           <TabPane tabId={RECEIVE}>RECEIVE</TabPane>
         </TabContent>
 
-        {(isLoading || _.isEmpty(balances)) && (
+        {(isLoading || (_.isEmpty(balances) && activeTab === BALANCE)) && (
           <div className={style.loaderContainer}>
             <ClipLoader size="35px" />
           </div>

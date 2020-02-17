@@ -32,7 +32,7 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
   };
 
   const renderSettings = () => {
-    const commitHash = '1d343028420e6884435834fc67c33cb39f2ca47f';
+    const commitHash = 'e671837298f2c19b682778c0bd9942a411c00a0a';
     return (
       <React.Fragment>
         <h2>
@@ -52,7 +52,7 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
           <br />
           <span>
             commit
-            <a href={`https://github.com/blockparty-sh/wallet/commit/${commitHash}`}>
+            <a href={`https://github.com/coldflame426/blockparty-wallet/commit/${commitHash}`}>
               {commitHash}
             </a>
           </span>
