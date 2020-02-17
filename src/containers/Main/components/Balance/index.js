@@ -13,7 +13,7 @@ const Balance = ({ balances, tokens }) => {
 
   return (
     <div className={style.container}>
-      <h4>{balances.balance} BCH</h4>
+      <h4>{balances.balance || 0} BCH</h4>
 
       {tokens &&
         tokens.map(token => (
@@ -31,7 +31,8 @@ const Balance = ({ balances, tokens }) => {
             <span className={style.symbol}>{token.symbol}</span>
 
             <span className={style.balance}>
-              {balances.tokens.find(item => item.tokenId === token.id).balance}
+              {balances.tokens.find(item => item.tokenId === token.id) &&
+                balances.tokens.find(item => item.tokenId === token.id).balance}
             </span>
           </div>
         ))}
