@@ -27,7 +27,7 @@ function App() {
       <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} />
 
       {wallet ? (
-        <Main balances={balances} />
+        <Main balances={balances} wallet={wallet} />
       ) : (
         <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />
       )}

@@ -6,6 +6,7 @@ import _ from 'lodash';
 import { ClipLoader } from 'react-spinners';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import Balance from './components/Balance';
+import Receive from './components/Receive';
 
 import getTokenInfo from 'contexts/getTokenInfo';
 
@@ -26,7 +27,7 @@ const usePrevious = value => {
   return ref.current;
 };
 
-const Main = ({ balances }) => {
+const Main = ({ balances, wallet }) => {
   const [isLoading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState(ACTIONS);
   const [tokens, setTokens] = useState([]);
@@ -94,10 +95,12 @@ const Main = ({ balances }) => {
             <Balance balances={balances} tokens={tokens} />
           </TabPane>
           <TabPane tabId={SEND}>SEND</TabPane>
-          <TabPane tabId={RECEIVE}>RECEIVE</TabPane>
+          <TabPane tabId={RECEIVE}>
+            <Receive wallet={wallet} />
+          </TabPane>
         </TabContent>
 
-        {(isLoading || (_.isEmpty(balances) && activeTab === BALANCE)) && (
+        {isLoading && _.isEmpty(balances) && activeTab === BALANCE && (
           <div className={style.loaderContainer}>
             <ClipLoader size="35px" />
           </div>
@@ -108,7 +111,8 @@ const Main = ({ balances }) => {
 };
 
 Main.propTypes = {
-  balances: PropTypes.object
+  balances: PropTypes.object,
+  wallet: PropTypes.object
 };
 
 export default Main;
