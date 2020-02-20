@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import classnames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 
 import { Tooltip } from 'reactstrap';
@@ -13,7 +13,7 @@ const InputField = ({ iconSrc, info, noBorder, ...rest }) => {
     <div className={style.container} onMouseLeave={() => setVisible(false)}>
       <input
         {...rest}
-        className={classnames(
+        className={cx(
           style.textInput,
           {
             [style.textInputDisabled]: rest.disabled,

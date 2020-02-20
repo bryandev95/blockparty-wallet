@@ -1,4 +1,4 @@
-import getWalletDetails from './getWalletDetails';
+import { getWalletDetails } from './utils';
 
 export const getWallet = () => {
   const wallet = JSON.parse(localStorage.getItem('wallet'));

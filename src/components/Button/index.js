@@ -1,5 +1,5 @@
 import React from 'react';
-import classnames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 
 import { Button as ReactstrapButton } from 'reactstrap';
@@ -18,7 +18,7 @@ const Button = ({ round, disabled, color, block, outline, children, onClick }) =
       disabled={disabled}
       outline={outline}
       block={block}
-      className={classnames({ 'btn-round': round })}
+      className={cx({ 'btn-round': round })}
       onClick={onClick}
     >
       {children}
