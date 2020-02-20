@@ -13,29 +13,26 @@
   padding-top: 20px;
 
   .table {
-    thead tr {
+    tr {
       display: grid;
-      grid-template-columns: 125px 200px 80px 60px 80px 100px 60px;
+      grid-template-columns: 125px 200px 80px 60px 70px 100px 60px;
 
       th {
         color: $color_medium_black;
         font-size: 14px;
-        padding: 5px 0 5px 20px;
+        padding: 7px 0 7px 20px;
         font-weight: 500;
       }
-    }
-
-    tbody tr {
-      display: grid;
-      grid-template-columns: 125px 200px 80px 60px 80px 100px 60px;
 
       td {
         font-size: 14px;
         color: $color_medium_black;
-        padding: 5px 0 5px 20px;
+        padding: 7px 0 7px 20px;
         display: block;
         text-overflow: ellipsis;
         overflow: hidden;
+        white-space: nowrap;
+        align-items: center;
 
         .balance {
           color: $color_green;
@@ -44,15 +41,15 @@
             color: $error_color;
           }
         }
-      }
 
-      &:nth-of-type(odd) {
-        background-color: $border_color;
+        a {
+          color: $color_green;
+        }
       }
+    }
 
-      a {
-        color: $color_green;
-      }
+    tbody tr:nth-of-type(odd) {
+      background-color: $border_color;
     }
   }
 }

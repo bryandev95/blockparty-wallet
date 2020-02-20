@@ -10,8 +10,7 @@ const Actions = () => {
 
   const formatDate = date => {
     const day = date.getDate();
-    // const month = date.getMonth() + 1;
-    const month = 11;
+    const month = date.getMonth() + 1;
     const year = date.getFullYear();
 
     const hours = date.getHours();
@@ -20,7 +19,8 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
-  if (!transactions.txs) return <div className={style.noTransaction}>No transaction</div>;
+  if (!transactions.txs || !transactions.txs.length)
+    return <div className={style.noTransaction}>No transaction</div>;
   return (
     <div className={style.container}>
       <table className={style.table}>
