@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
-import { getWallet, importWallet } from './importWallet';
-import { generateMnemonic } from './generateMnemonic';
-import getBalance from './getBalance';
 
-const update = async ({ wallet, setBalances }) => {
+import { getWallet, importWallet } from './importWallet';
+import { generateMnemonic, getBalance, getTransactions } from './utils';
+
+const update = async ({ wallet, setBalances, setTransactions }) => {
   try {
     if (!wallet) {
       return;
     }
 
-    const balance = await getBalance(wallet, false);
+    const balance = await getBalance(wallet);
+    const transactions = await getTransactions(wallet);
+    setTransactions(transactions);
     setBalances(balance);
   } catch (error) {
-    console.log('update error', error.message || error.error);
+    console.log('Error updating balance and transactions : ', error.message || error.error);
   }
 };
 
@@ -20,16 +22,17 @@ export const useWallet = () => {
   const [mnemonic, setMnemonic] = useState('');
   const [wallet, setWallet] = useState(null);
   const [balances, setBalances] = useState({});
+  const [transactions, setTransactions] = useState({});
 
   useEffect(() => {
     const w = getWallet();
     if (w) {
       setWallet(w);
-      update({ wallet: w, setBalances });
+      update({ wallet: w, setBalances, setTransactions });
     }
 
     const routineId = setInterval(() => {
-      update({ wallet: getWallet(), setBalances });
+      update({ wallet: getWallet(), setBalances, setTransactions });
     }, 10000);
 
     return () => {
@@ -41,11 +44,11 @@ export const useWallet = () => {
     mnemonic,
     wallet,
     balances,
-    update: () => update({ wallet, setBalances }),
+    transactions,
     importWallet: payload => {
       const newWallet = importWallet(payload);
       setWallet(newWallet);
-      update({ wallet: newWallet, setBalances });
+      update({ wallet: newWallet, setBalances, setTransactions });
     },
     generateMnemonic: () => {
       setMnemonic(generateMnemonic());

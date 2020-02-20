@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import _ from 'lodash';
 
 import { ClipLoader } from 'react-spinners';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import Actions from './components/Actions';
 import Balance from './components/Balance';
 import Receive from './components/Receive';
 
-import getTokenInfo from 'contexts/getTokenInfo';
+import { getTokenInfo } from 'contexts/utils';
 
 import style from './style.module.scss';
 
@@ -36,18 +36,15 @@ const Main = ({ balances, wallet }) => {
   useEffect(() => {
     if (!balances.tokens) return;
 
-    if (!_.isEqual(balances, prevBalance)) {
-      setLoading(true);
-      getTokenInfo(balances.tokens)
-        .then(response => {
-          setLoading(false);
-          setTokens(response);
-        })
-        .catch(e => {
-          console.log('update token error ', e);
-          setLoading(false);
-        });
-    }
+    setLoading(true);
+    getTokenInfo(balances.tokens)
+      .then(response => {
+        setLoading(false);
+        setTokens(response);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
     // eslint-disable-next-line
   }, [prevBalance]);
 
@@ -90,7 +87,9 @@ const Main = ({ balances, wallet }) => {
 
       <div className={style.tabContainer}>
         <TabContent activeTab={activeTab}>
-          <TabPane tabId={ACTIONS}>ACTIONS</TabPane>
+          <TabPane tabId={ACTIONS}>
+            <Actions />
+          </TabPane>
           <TabPane tabId={BALANCE}>
             <Balance balances={balances} tokens={tokens} />
           </TabPane>
@@ -100,7 +99,7 @@ const Main = ({ balances, wallet }) => {
           </TabPane>
         </TabContent>
 
-        {isLoading && _.isEmpty(balances) && activeTab === BALANCE && (
+        {isLoading && activeTab === BALANCE && (
           <div className={style.loaderContainer}>
             <ClipLoader size="35px" />
           </div>
