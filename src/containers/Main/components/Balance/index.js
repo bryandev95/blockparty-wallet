@@ -1,15 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 
+import { ClipLoader } from 'react-spinners';
 import Img from 'react-image';
 import Jdenticon from 'react-jdenticon';
 
 import { tokenBaseUrl } from 'constants/config';
 
+import { getTokenInfo } from 'contexts/utils';
+
 import style from './style.module.scss';
 
-const Balance = ({ balances, tokens }) => {
+const usePrevious = value => {
+  const ref = useRef();
+
+  useEffect(() => {
+    ref.current = value;
+  });
+
+  return ref.current;
+};
+
+const Balance = ({ balances }) => {
+  const [isLoading, setLoading] = useState(false);
+  const [tokens, setTokens] = useState([]);
+  const prevBalance = usePrevious(balances);
   if (!balances) return null;
+
+  useEffect(() => {
+    if (!balances.tokens) return;
+
+    setLoading(true);
+    getTokenInfo(balances.tokens)
+      .then(response => {
+        setLoading(false);
+        setTokens(response);
+      })
+      .catch(() => {
+        setLoading(false);
+      });
+    // eslint-disable-next-line
+  }, [prevBalance]);
 
   return (
     <div className={style.container}>
@@ -56,13 +87,18 @@ const Balance = ({ balances, tokens }) => {
           </tbody>
         </table>
       )}
+
+      {isLoading && (
+        <div className={style.loaderContainer}>
+          <ClipLoader size="35px" />
+        </div>
+      )}
     </div>
   );
 };
 
 Balance.propTypes = {
-  balances: PropTypes.object,
-  tokens: PropTypes.array.isRequired
+  balances: PropTypes.object
 };
 
 export default Balance;
