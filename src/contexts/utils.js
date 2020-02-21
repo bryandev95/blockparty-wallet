@@ -72,3 +72,17 @@ export const getWalletDetails = ({ mnemonic, wif }) => {
     };
   }
 };
+
+export const sendToken = (wallet, payload) => {
+  const { slpAddress, cashAddress, fundingWif } = wallet;
+  const { address, type, amount } = payload;
+
+  return SLP.TokenType1.send({
+    fundingAddress: slpAddress,
+    fundingWif,
+    tokenReceiverAddress: address,
+    bchChangeReceiverAddress: cashAddress,
+    tokenId: type,
+    amount
+  });
+};

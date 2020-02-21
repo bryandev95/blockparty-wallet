@@ -1,0 +1,27 @@
+@import 'constants/colors.scss';
+
+.container {
+  display: block;
+
+  .form {
+    .formField {
+      margin-bottom: 20px;
+
+      label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+      }
+    }
+
+    .submit {
+      padding-top: 10px;
+      text-align: center;
+    }
+  }
+
+  .errorText {
+    font-size: 15px;
+    color: $error_color;
+  }
+}

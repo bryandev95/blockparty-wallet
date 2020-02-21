@@ -5,6 +5,7 @@ import cx from 'classnames';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import Actions from './components/Actions';
 import Balance from './components/Balance';
+import Send from './components/Send';
 import Receive from './components/Receive';
 
 import style from './style.module.scss';
@@ -15,7 +16,7 @@ const SEND = 3;
 const RECEIVE = 4;
 
 const Main = ({ balances, wallet }) => {
-  const [activeTab, setActiveTab] = useState(ACTIONS);
+  const [activeTab, setActiveTab] = useState(SEND);
 
   return (
     <div className={style.container}>
@@ -62,7 +63,9 @@ const Main = ({ balances, wallet }) => {
           <TabPane tabId={BALANCE}>
             <Balance balances={balances} />
           </TabPane>
-          <TabPane tabId={SEND}>SEND</TabPane>
+          <TabPane tabId={SEND}>
+            {activeTab === SEND && <Send balances={balances} wallet={wallet} />}
+          </TabPane>
           <TabPane tabId={RECEIVE}>
             <Receive wallet={wallet} />
           </TabPane>
