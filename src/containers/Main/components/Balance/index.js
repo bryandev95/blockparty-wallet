@@ -64,7 +64,7 @@ const Balance = ({ balances }) => {
                   <Img
                     width="20"
                     src={`${tokenBaseUrl}/${token.id}.png`}
-                    unloader={<Jdenticon size="25" value={token.id} />}
+                    unloader={<Jdenticon size="20" value={token.id} />}
                   />
                   <span>{token.symbol}</span>
                 </td>
