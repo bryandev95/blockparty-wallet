@@ -1,14 +1,15 @@
 import SLPSDK from 'slp-sdk';
 import { bitcore } from 'slpjs';
 
-import { restURL } from 'constants/config';
+import { restURL, cashExplorer } from 'constants/config';
+
+const sb = require('satoshi-bitcoin');
+const explorer = require('bitcore-explorers');
 
 const SLP = new SLPSDK({ restURL });
 
 export const generateMnemonic = () => {
-  const lang = 'english';
-
-  return SLP.Mnemonic.generate(128, SLP.Mnemonic.wordLists()[lang]);
+  return SLP.Mnemonic.generate(128, SLP.Mnemonic.wordLists()['english']);
 };
 
 export const getTokenInfo = async tokens => {
@@ -85,4 +86,61 @@ export const sendToken = (wallet, payload) => {
     tokenId: type,
     amount
   });
+};
+
+export const sendBCH = async (wallet, receiveAddress, amount, cb) => {
+  try {
+    const { cashAddress, fundingWif } = wallet;
+    if (!bitcore.Address.isValid(receiveAddress)) {
+      throw new Error('Invalid address');
+    }
+
+    const privateKey = bitcore.PrivateKey(fundingWif);
+    const satoshis = sb.toSatoshi(amount) | 0;
+
+    let tx = bitcore.Transaction();
+
+    const utxos = await getUtxos(cashAddress);
+    tx.from(utxos);
+    tx.to(receiveAddress, satoshis);
+    tx.feePerKb(1500);
+    tx.change(privateKey.toAddress());
+
+    tx = cleanTxDust(tx);
+    tx.sign(privateKey);
+
+    const insight = new explorer.Insight(cashExplorer);
+
+    insight.broadcast(tx.toString(), cb);
+  } catch (err) {
+    console.log('Error in sending BCH : ', err);
+    throw err;
+  }
+};
+
+const cleanTxDust = tx => {
+  for (let i = 0; i < tx.outputs.length; ++i) {
+    if (tx.outputs[i]._satoshis > 0 && tx.outputs[i]._satoshis < 546) {
+      tx.outputs.splice(i, 1);
+      --i;
+    }
+  }
+
+  return tx;
+};
+
+const getUtxos = async address => {
+  const utxo = await SLP.Address.utxo(address);
+
+  const utxos = utxo.utxos.map(item => ({
+    txId: item.txid,
+    address,
+    outputIndex: item.vout,
+    script: utxo.scriptPubKey,
+    satoshis: item.satoshis
+  }));
+
+  utxos.sort((a, b) => (a.satoshis > b.satoshis ? 1 : a.satoshis < b.satoshis ? -1 : 0));
+
+  return utxos;
 };

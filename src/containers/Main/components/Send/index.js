@@ -7,7 +7,7 @@ import Button from 'components/Button';
 import DropdownSelect from 'components/DropdownSelect';
 import Input from 'components/Input';
 
-import { getTokenInfo, sendToken } from 'contexts/utils';
+import { getTokenInfo, sendToken, sendBCH } from 'contexts/utils';
 
 import style from './style.module.scss';
 
@@ -81,7 +81,7 @@ const Send = ({ balances, wallet }) => {
   };
 
   const handleSubmit = () => {
-    const { type } = formData;
+    const { type, address, amount } = formData;
 
     if (type) {
       setLoading(true);
@@ -94,6 +94,16 @@ const Send = ({ balances, wallet }) => {
           setLoading(false);
           setErrors(err.message);
         });
+    } else {
+      sendBCH(wallet, address, amount, err => {
+        if (err) {
+          setLoading(false);
+          setErrors(err.message || err);
+        } else {
+          setLoading(false);
+          setTitle('Transaction successful.');
+        }
+      });
     }
   };
 
@@ -117,7 +127,8 @@ const Send = ({ balances, wallet }) => {
         </div>
 
         <div className={style.formField}>
-          <label>Amount</label>
+          <label>Label</label>
+          {/* <a>Max</a> */}
           <br />
           <Input name="amount" onChange={handleChange} />
         </div>
