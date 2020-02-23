@@ -80,6 +80,16 @@ const Send = ({ balances, wallet }) => {
     setFormData(p => ({ ...p, [name]: value }));
   };
 
+  const handleClickMax = () => {
+    const { type } = formData;
+
+    if (!type) {
+      setFormData({ ...formData, amount: balances.balance });
+    } else {
+      setFormData({ ...formData, amount: tokens.find(token => token.id === type).balance });
+    }
+  };
+
   const handleSubmit = () => {
     const { type, address, amount } = formData;
 
@@ -127,10 +137,10 @@ const Send = ({ balances, wallet }) => {
         </div>
 
         <div className={style.formField}>
-          <label>Label</label>
-          {/* <a>Max</a> */}
+          <label>Amount</label>
+          <a onClick={handleClickMax}>Max</a>
           <br />
-          <Input name="amount" onChange={handleChange} />
+          <Input name="amount" value={formData.amount} onChange={handleChange} />
         </div>
 
         {errors && <p className={style.errorText}>Error: {errors}</p>}

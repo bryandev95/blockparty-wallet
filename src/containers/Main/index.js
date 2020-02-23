@@ -16,7 +16,7 @@ const SEND = 3;
 const RECEIVE = 4;
 
 const Main = ({ balances, wallet }) => {
-  const [activeTab, setActiveTab] = useState(SEND);
+  const [activeTab, setActiveTab] = useState(ACTIONS);
 
   return (
     <div className={style.container}>
