@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 import Notification from 'react-web-notification';
@@ -7,23 +7,12 @@ import Button from 'components/Button';
 import DropdownSelect from 'components/DropdownSelect';
 import Input from 'components/Input';
 
-import { getTokenInfo, sendToken, sendBCH } from 'contexts/utils';
+import { sendToken, sendBCH } from 'contexts/utils';
 
 import style from './style.module.scss';
 
-const usePrevious = value => {
-  const ref = useRef();
-
-  useEffect(() => {
-    ref.current = value;
-  });
-
-  return ref.current;
-};
-
-const Send = ({ balances, wallet }) => {
+const Send = ({ tokens, balances, wallet }) => {
   const [isLoading, setLoading] = useState(false);
-  const [tokens, setTokens] = useState([]);
   const [errors, setErrors] = useState(null);
   const [title, setTitle] = useState('');
   const [formData, setFormData] = useState({
@@ -31,21 +20,6 @@ const Send = ({ balances, wallet }) => {
     address: '',
     amount: ''
   });
-  const prevBalance = usePrevious(balances);
-
-  useEffect(() => {
-    if (!balances.tokens) return;
-
-    getTokenInfo(balances.tokens).then(response => {
-      setTokens(
-        response.map(item => ({
-          ...item,
-          balance: balances.tokens.find(token => token.tokenId === item.id).balance
-        }))
-      );
-    });
-    // eslint-disable-next-line
-  }, [prevBalance]);
 
   const getOptionList = () => {
     const options = [{ label: 'BCH', value: 0 }];
@@ -78,6 +52,7 @@ const Send = ({ balances, wallet }) => {
     const { name, value } = e.target;
 
     setFormData(p => ({ ...p, [name]: value }));
+    setErrors(null);
   };
 
   const handleClickMax = () => {
@@ -98,7 +73,7 @@ const Send = ({ balances, wallet }) => {
       sendToken(wallet, formData)
         .then(() => {
           setLoading(false);
-          setTitle('Token successfully sent');
+          setTitle('Token sent successfully');
         })
         .catch(err => {
           setLoading(false);
