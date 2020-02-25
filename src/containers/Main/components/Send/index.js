@@ -41,7 +41,7 @@ const Send = ({ tokens, balances, wallet }) => {
     if (!address || !/^[0-9]+([,.][0-9]+)?$/g.test(amount)) return false;
     if (!type && balances.balance < amount) return false;
     if (type) {
-      const token = tokens.find(token => token.id === type);
+      const token = balances.tokens.find(token => token.tokenId === type);
       if (token && token.balance < parseFloat(amount)) return false;
     }
 
@@ -61,7 +61,10 @@ const Send = ({ tokens, balances, wallet }) => {
     if (!type) {
       setFormData({ ...formData, amount: balances.balance });
     } else {
-      setFormData({ ...formData, amount: tokens.find(token => token.id === type).balance });
+      setFormData({
+        ...formData,
+        amount: balances.tokens.find(token => token.tokenId === type).balance
+      });
     }
   };
 
