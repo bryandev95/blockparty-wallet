@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
+import { ClipLoader } from 'react-spinners';
 import { Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
 import Actions from './components/Actions';
 import Balance from './components/Balance';
@@ -15,7 +16,7 @@ const BALANCE = 2;
 const SEND = 3;
 const RECEIVE = 4;
 
-const Main = ({ balances, wallet }) => {
+const Main = ({ isLoading, balances, tokens, wallet }) => {
   const [activeTab, setActiveTab] = useState(ACTIONS);
 
   return (
@@ -61,22 +62,30 @@ const Main = ({ balances, wallet }) => {
             <Actions />
           </TabPane>
           <TabPane tabId={BALANCE}>
-            <Balance balances={balances} />
+            <Balance tokens={tokens} balances={balances} />
           </TabPane>
           <TabPane tabId={SEND}>
-            {activeTab === SEND && <Send balances={balances} wallet={wallet} />}
+            {activeTab === SEND && <Send tokens={tokens} balances={balances} wallet={wallet} />}
           </TabPane>
           <TabPane tabId={RECEIVE}>
             <Receive wallet={wallet} />
           </TabPane>
         </TabContent>
+
+        {isLoading && (
+          <div className={style.loaderContainer}>
+            <ClipLoader size="35px" />
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
 Main.propTypes = {
+  isLoading: PropTypes.bool,
   balances: PropTypes.object,
+  tokens: PropTypes.array,
   wallet: PropTypes.object
 };
 

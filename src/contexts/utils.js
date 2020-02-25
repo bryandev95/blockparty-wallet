@@ -8,6 +8,10 @@ const explorer = require('bitcore-explorers');
 
 const SLP = new SLPSDK({ restURL });
 
+export const getSLP = () => {
+  return SLP;
+};
+
 export const generateMnemonic = () => {
   return SLP.Mnemonic.generate(128, SLP.Mnemonic.wordLists()['english']);
 };

@@ -11,7 +11,7 @@ import styles from './app.module.scss';
 
 function App() {
   const [showInfo, setShowInfo] = useState(false);
-  const { wallet, balances, logout } = useContext(WalletContext);
+  const { isLoading, wallet, balances, tokens, logout } = useContext(WalletContext);
 
   const toggleShowInfo = () => {
     setShowInfo(!showInfo);
@@ -27,7 +27,7 @@ function App() {
       <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} />
 
       {wallet ? (
-        <Main balances={balances} wallet={wallet} />
+        <Main isLoading={isLoading} tokens={tokens} balances={balances} wallet={wallet} />
       ) : (
         <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />
       )}
