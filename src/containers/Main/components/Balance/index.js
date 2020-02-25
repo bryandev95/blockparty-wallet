@@ -11,7 +11,7 @@ import style from './style.module.scss';
 const Balance = ({ tokens, balances }) => {
   return (
     <div className={style.container}>
-      <h4>{balances.balance + balances.unconfirmedBalance || 0} BCH</h4>
+      <h4>{(balances.balance + balances.unconfirmedBalance).toFixed(8) || 0} BCH</h4>
 
       {!!balances.tokens && !!tokens && !!tokens.length && (
         <table className={style.table}>
