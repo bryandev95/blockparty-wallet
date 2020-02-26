@@ -14,7 +14,7 @@ const update = async ({ wallet, setBalances, setTransactions, setTokens, setLoad
     const balance = await getBalance(wallet);
     const transactions = await getTransactions(wallet);
     const tokens = await getTokenInfo(balance.tokens);
-    setTransactions(transactions);
+    setTransactions(transactions.txs);
     setBalances(balance);
     setTokens(tokens);
     setLoading(false);
@@ -29,7 +29,7 @@ export const useWallet = () => {
   const [tokens, setTokens] = useState([]);
   const [balances, setBalances] = useState({});
   const [isLoading, setLoading] = useState({});
-  const [transactions, setTransactions] = useState({});
+  const [transactions, setTransactions] = useState([]);
 
   const openSocket = ({ slpAddress }) => {
     const query = {

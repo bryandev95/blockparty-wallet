@@ -6,7 +6,10 @@ import { WalletContext } from 'contexts/WalletContext';
 import style from './style.module.scss';
 
 const Actions = () => {
-  const { transactions } = useContext(WalletContext);
+  const {
+    wallet: { legacyAddress },
+    transactions
+  } = useContext(WalletContext);
 
   const formatDate = date => {
     const day = date.getDate();
@@ -19,7 +22,7 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
-  if (!transactions.txs || !transactions.txs.length)
+  if (!transactions || !transactions.length)
     return <div className={style.noTransaction}>No transaction</div>;
   return (
     <div className={style.container}>
@@ -37,32 +40,36 @@ const Actions = () => {
         </thead>
 
         <tbody>
-          {transactions.txs.map(tx => (
-            <tr key={tx.txid}>
-              <td>{formatDate(new Date(tx.time * 1000))}</td>
-              <td>
-                <a
-                  href={`https://explorer.bitcoin.com/bch/tx/${tx.txid}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {tx.txid}
-                </a>
-              </td>
-              <td>{tx.confirmations}</td>
-              <td>{tx.vin.length}</td>
-              <td>{tx.vout.length}</td>
-              <td>
-                <span
-                  className={cx(style.balance, { [style.minus]: tx.valueIn - tx.valueOut < 0 })}
-                >
-                  {tx.valueIn - tx.valueOut > 0 && '+'}
-                  {(tx.valueIn - tx.valueOut).toFixed(8)}
-                </span>
-              </td>
-              <td>{tx.size / 1000}</td>
-            </tr>
-          ))}
+          {transactions
+            .map(tx => ({ ...tx, isMine: tx.vin.some(el => el.addr === legacyAddress) }))
+            .map(tx => (
+              <tr key={tx.txid}>
+                <td>{formatDate(new Date(tx.time * 1000))}</td>
+                <td>
+                  <a
+                    href={`https://explorer.bitcoin.com/bch/tx/${tx.txid}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {tx.txid}
+                  </a>
+                </td>
+                <td>{tx.confirmations}</td>
+                <td>{tx.vin.length}</td>
+                <td>{tx.vout.length}</td>
+                <td>
+                  <span
+                    className={cx(style.balance, {
+                      [style.minus]: tx.isMine
+                    })}
+                  >
+                    {tx.isMine ? '-' : '+'}
+                    {(tx.valueIn - tx.valueOut).toFixed(8)}
+                  </span>
+                </td>
+                <td>{tx.size / 1000}</td>
+              </tr>
+            ))}
         </tbody>
       </table>
     </div>
