@@ -6,6 +6,7 @@ import Header from './containers/Header';
 import HoverOver from './components/HoverOver';
 import Main from './containers/Main';
 import OnBoarding from './containers/OnBoarding';
+import Wallet from './contexts/wallet';
 
 import styles from './app.module.scss';
 
@@ -38,6 +39,7 @@ function App() {
         onToggle={toggleShowInfo}
         onLogout={handleLogout}
       />
+      <Wallet />
     </div>
   );
 }
