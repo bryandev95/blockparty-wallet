@@ -92,10 +92,10 @@ export const sendToken = (wallet, payload) => {
   });
 };
 
-export const sendBCH = async (wallet, receiveAddress, amount, cb) => {
+export const sendBCH = async (wallet, receiverAddress, amount, cb) => {
   try {
     const { cashAddress, fundingWif } = wallet;
-    if (bitcore.Address.isValid(receiveAddress)) {
+    if (bitcore.Address.isValid(receiverAddress)) {
       const privateKey = bitcore.PrivateKey(fundingWif);
       const satoshis = sb.toSatoshi(amount) | 0;
 
@@ -103,7 +103,7 @@ export const sendBCH = async (wallet, receiveAddress, amount, cb) => {
 
       const utxos = await getUtxos(cashAddress);
       tx.from(utxos);
-      tx.to(receiveAddress, satoshis);
+      tx.to(receiverAddress, satoshis);
       tx.feePerKb(1500);
       tx.change(privateKey.toAddress());
 
@@ -122,7 +122,7 @@ export const sendBCH = async (wallet, receiveAddress, amount, cb) => {
   }
 };
 
-const cleanTxDust = tx => {
+export const cleanTxDust = tx => {
   for (let i = 0; i < tx.outputs.length; ++i) {
     if (tx.outputs[i]._satoshis > 0 && tx.outputs[i]._satoshis < 546) {
       tx.outputs.splice(i, 1);
@@ -133,7 +133,7 @@ const cleanTxDust = tx => {
   return tx;
 };
 
-const getUtxos = async address => {
+export const getUtxos = async address => {
   const utxo = await SLP.Address.utxo(address);
 
   const utxos = utxo.utxos.map(item => ({
