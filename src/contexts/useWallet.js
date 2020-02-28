@@ -1,26 +1,49 @@
 import { useEffect, useState } from 'react';
 
 import { getWallet, importWallet } from './importWallet';
-import { generateMnemonic, getBalance, getTransactions, getTokenInfo } from './utils';
-import { socketServerUrl } from 'constants/config';
+import {
+  generateMnemonic,
+  getBalance,
+  getTokenInfo,
+  getSLPTransactions,
+  getBCHTransactions,
+  getBlockCount,
+  getTrans
+} from './utils';
+import { slpSocketUrl, bitSocketUrl } from 'constants/config';
 
-const update = async ({ wallet, setBalances, setTransactions, setTokens, setLoading }) => {
-  try {
-    if (!wallet) {
-      return;
-    }
-
-    setLoading(true);
-    const balance = await getBalance(wallet);
-    const transactions = await getTransactions(wallet);
-    const tokens = await getTokenInfo(balance.tokens);
-    setTransactions(transactions.txs);
-    setBalances(balance);
-    setTokens(tokens);
-    setLoading(false);
-  } catch (error) {
-    console.log('Error updating balance and transactions : ', error.message || error.error);
+const update = async ({
+  wallet,
+  setBalances,
+  setTransactions,
+  setTokens,
+  setLoading,
+  setCount
+}) => {
+  if (!wallet) {
+    return;
   }
+
+  setLoading(true);
+  Promise.all([
+    getBalance(wallet),
+    getSLPTransactions(wallet.slpAddress),
+    getBCHTransactions(wallet.cashAddress),
+    getTokenInfo(wallet.slpAddress),
+    getBlockCount()
+  ])
+    .then(values => {
+      setLoading(false);
+      setBalances(values[0]);
+      const transactions = getTrans(values[1], values[2]);
+      setTransactions(transactions);
+      setTokens(values[3]);
+      setCount(values[4]);
+    })
+    .catch(error => {
+      console.log('Error updating balance and transactions : ', error.message || error.error);
+      setLoading(true);
+    });
 };
 
 export const useWallet = () => {
@@ -28,37 +51,106 @@ export const useWallet = () => {
   const [wallet, setWallet] = useState(null);
   const [tokens, setTokens] = useState([]);
   const [balances, setBalances] = useState({});
-  const [isLoading, setLoading] = useState({});
+  const [isLoading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
   const [transactions, setTransactions] = useState([]);
 
-  const openSocket = ({ slpAddress }) => {
+  const openSlpSocket = ({ slpAddress }) => {
+    // const query = {
+    //   v: 3,
+    //   q: {
+    //     find: {
+    //       'in.e.a': slpAddress,
+    //       'out.e.a': slpAddress
+    //     }
+    //   }
+    // };
+    const query = {
+      v: 3,
+      q: {
+        db: ['c', 'u'],
+        find: {
+          $or: [
+            {
+              'in.e.a': slpAddress
+            },
+            {
+              'out.e.a': slpAddress
+            }
+          ]
+        },
+        sort: {
+          'blk.i': -1
+        },
+        limit: 100
+      },
+      r: {
+        f: '[.[] | { txid: .tx.h, tokenDetails: .slp, blk: .blk, in, out } ]'
+      }
+    };
+
+    const b64 = btoa(JSON.stringify(query));
+
+    const url = `${slpSocketUrl}/${b64}`;
+
+    const socket = new EventSource(url);
+
+    socket.onmessage = () => {
+      setTimeout(() => {
+        update({
+          wallet: getWallet(),
+          setBalances,
+          setTransactions,
+          setTokens,
+          setLoading,
+          setCount
+        });
+      }, 1000);
+    };
+  };
+
+  const openBitSocket = ({ cashAddress }) => {
     const query = {
       v: 3,
       q: {
         find: {
-          'in.e.a': slpAddress,
-          'out.e.a': slpAddress
+          'in.e.a': cashAddress.slice(12),
+          'out.e.a': cashAddress.slice(12)
         }
       }
     };
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${socketServerUrl}/${b64}`;
+    const url = `${bitSocketUrl}/${b64}`;
 
     const socket = new EventSource(url);
 
     socket.onmessage = () => {
-      update({ wallet: getWallet(), setBalances, setTransactions, setTokens, setLoading });
+      update({
+        wallet: getWallet(),
+        setBalances,
+        setTransactions,
+        setTokens,
+        setLoading,
+        setCount
+      });
     };
   };
-
   useEffect(() => {
     const w = getWallet();
     if (w) {
       setWallet(w);
-      update({ wallet: w, setBalances, setTransactions, setTokens, setLoading });
-      openSocket(w);
+      openSlpSocket(w);
+      openBitSocket(w);
+      update({
+        wallet: getWallet(),
+        setBalances,
+        setTransactions,
+        setTokens,
+        setLoading,
+        setCount
+      });
     }
   }, []);
 
@@ -69,10 +161,11 @@ export const useWallet = () => {
     balances,
     tokens,
     transactions,
+    count,
     importWallet: payload => {
       const newWallet = importWallet(payload);
       setWallet(newWallet);
-      update({ wallet: newWallet, setBalances, setTransactions, setTokens, setLoading });
+      update({ wallet: newWallet, setBalances, setTransactions, setTokens, setLoading, setCount });
     },
     generateMnemonic: () => {
       setMnemonic(generateMnemonic());

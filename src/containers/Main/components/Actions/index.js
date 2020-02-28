@@ -7,9 +7,13 @@ import style from './style.module.scss';
 
 const Actions = () => {
   const {
-    wallet: { legacyAddress },
-    transactions
+    wallet: { slpAddress: slpAddr, cashAddress },
+    transactions,
+    count
   } = useContext(WalletContext);
+
+  const cashAddr = cashAddress.slice(12);
+  const addresses = [slpAddr, cashAddr];
 
   const formatDate = date => {
     const day = date.getDate();
@@ -34,17 +38,20 @@ const Actions = () => {
             <th>Confirms</th>
             <th>Inputs</th>
             <th>Outputs</th>
-            <th>Amount</th>
-            <th>Size</th>
+            <th>BCH Amount</th>
+            <th>Action</th>
           </tr>
         </thead>
 
         <tbody>
           {transactions
-            .map(tx => ({ ...tx, isMine: tx.vin.some(el => el.addr === legacyAddress) }))
+            .map(tx => ({
+              ...tx,
+              isSend: tx.in.some(el => addresses.includes(el.e.a))
+            }))
             .map(tx => (
               <tr key={tx.txid}>
-                <td>{formatDate(new Date(tx.time * 1000))}</td>
+                <td>{tx.blk ? formatDate(new Date(tx.blk.t * 1000)) : '-'}</td>
                 <td>
                   <a
                     href={`https://explorer.bitcoin.com/bch/tx/${tx.txid}`}
@@ -54,20 +61,24 @@ const Actions = () => {
                     {tx.txid}
                   </a>
                 </td>
-                <td>{tx.confirmations}</td>
-                <td>{tx.vin.length}</td>
-                <td>{tx.vout.length}</td>
+                <td>{tx.blk ? count - tx.blk.i + 1 : 0}</td>
+                <td>{tx.in.length}</td>
+                <td>{tx.out.length}</td>
                 <td>
                   <span
                     className={cx(style.balance, {
-                      [style.minus]: tx.isMine
+                      [style.minus]: tx.isSend
                     })}
                   >
-                    {tx.isMine ? '-' : '+'}
-                    {(tx.valueIn - tx.valueOut).toFixed(8)}
+                    {tx.isSend ? '-' : '+'}
+                    {tx.out
+                      .filter(item => !addresses.includes(item.e.a))
+                      .map(item => item.e.v)
+                      .reduce((a, v) => a + v) /
+                      10 ** 8}
                   </span>
                 </td>
-                <td>{tx.size / 1000}</td>
+                <td>{`${tx.isSLP ? 'SLP' : 'BCH'} ${tx.isSend ? 'Send' : 'Receive'}`}</td>
               </tr>
             ))}
         </tbody>

@@ -1,7 +1,8 @@
 import SLPSDK from 'slp-sdk';
 import { bitcore } from 'slpjs';
+import _ from 'lodash';
 
-import { restURL, cashExplorer } from 'constants/config';
+import { restURL, cashExplorer, slpDBUrl, bitDBUrl } from 'constants/config';
 
 const sb = require('satoshi-bitcoin');
 const explorer = require('bitcore-explorers');
@@ -16,12 +17,76 @@ export const generateMnemonic = () => {
   return SLP.Mnemonic.generate(128, SLP.Mnemonic.wordLists()['english']);
 };
 
-export const getTokenInfo = async tokens => {
-  const tokenIds = tokens.map(token => token.tokenId);
+export const getTokenInfo = async slpAddress => {
+  const query = {
+    v: 3,
+    q: {
+      db: ['g'],
+      aggregate: [
+        {
+          $match: {
+            'graphTxn.outputs': {
+              $elemMatch: {
+                address: slpAddress,
+                status: 'UNSPENT',
+                slpAmount: { $gte: 0 }
+              }
+            }
+          }
+        },
+        { $unwind: '$graphTxn.outputs' },
+        {
+          $match: {
+            'graphTxn.outputs.address': slpAddress,
+            'graphTxn.outputs.status': 'UNSPENT',
+            'graphTxn.outputs.slpAmount': { $gte: 0 }
+          }
+        },
+        {
+          $project: {
+            amount: '$graphTxn.outputs.slpAmount',
+            address: '$graphTxn.outputs.address',
+            txid: '$graphTxn.txid',
+            vout: '$graphTxn.outputs.vout',
+            tokenId: '$tokenDetails.tokenIdHex'
+          }
+        },
+        {
+          $group: { _id: '$tokenId', amount: { $sum: '$amount' }, address: { $first: '$address' } }
+        },
+        {
+          $lookup: {
+            from: 'tokens',
+            localField: '_id',
+            foreignField: 'tokenDetails.tokenIdHex',
+            as: 'token'
+          }
+        }
+      ]
+    }
+  };
 
-  const tokenList = await SLP.Utils.list(tokenIds);
+  const b64 = btoa(JSON.stringify(query));
 
-  return tokenList;
+  const url = `${slpDBUrl}/${b64}`;
+
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      const { g: data } = await response.json();
+      const tokens = data.map(item => ({
+        id: item._id,
+        ...item.token[0].tokenDetails,
+        balance: parseInt(item.amount)
+      }));
+      return tokens;
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.log('Error while getting tokens: ', err);
+    return [];
+  }
 };
 
 export const getTransactions = async wallet => {
@@ -33,14 +98,81 @@ export const getTransactions = async wallet => {
   }
 };
 
+export const getSLPTransactions = async slpAddress => {
+  try {
+    const query = {
+      v: 3,
+      q: {
+        db: ['c', 'u'],
+        find: {
+          $or: [
+            {
+              'in.e.a': slpAddress
+            },
+            {
+              'out.e.a': slpAddress
+            }
+          ]
+        },
+        sort: {
+          'blk.i': -1
+        },
+        limit: 100
+      },
+      r: {
+        f: '[.[] | { txid: .tx.h, tokenDetails: .slp, blk: .blk, in, out } ]'
+      }
+    };
+
+    const b64 = btoa(JSON.stringify(query));
+
+    const url = `${slpDBUrl}/${b64}`;
+
+    const response = await fetch(url);
+    if (response.ok) {
+      const { u: unConfirmed, c: confirmed } = await response.json();
+      return [...unConfirmed, ...confirmed];
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.log('Error while getting SLP transactions: ', err);
+    return [];
+  }
+};
+
+export const getBCHTransactions = async cashAddress => {
+  try {
+    const query = {
+      v: 3,
+      q: {
+        find: {
+          'in.e.a': cashAddress.slice(12),
+          'out.e.a': cashAddress.slice(12)
+        }
+      }
+    };
+
+    const b64 = btoa(JSON.stringify(query));
+
+    const url = `${bitDBUrl}/${b64}`;
+
+    const response = await fetch(url);
+    if (response.ok) {
+      const { u: unConfirmed, c: confirmed } = await response.json();
+      return [...unConfirmed, ...confirmed];
+    } else {
+      return [];
+    }
+  } catch (err) {
+    console.log('Error while getting SLP transactions: ', err);
+    return [];
+  }
+};
+
 export const getBalance = async wallet => {
   try {
-    let bchBalance = await SLP.Address.details(wallet.cashAddress);
-
-    const slpBalance = await SLP.Utils.balancesForAddress(wallet.slpAddress);
-    bchBalance.tokens = slpBalance;
-
-    return bchBalance;
+    return await SLP.Address.details(wallet.cashAddress);
   } catch (err) {
     console.log('Error in getBalance: ', err.message || err);
     throw err;
@@ -112,7 +244,7 @@ export const sendBCH = async (wallet, receiverAddress, amount, cb) => {
 
       const insight = new explorer.Insight(cashExplorer);
 
-      insight.broadcast(tx.toString(), cb);
+      insight.broadcast(tx.serialize(), cb);
     } else {
       throw { message: 'Invalid address' };
     }
@@ -147,4 +279,35 @@ export const getUtxos = async address => {
   utxos.sort((a, b) => (a.satoshis > b.satoshis ? 1 : a.satoshis < b.satoshis ? -1 : 0));
 
   return utxos;
+};
+
+export const getBlockCount = async () => {
+  try {
+    const response = await fetch('https://rest.bitcoin.com/v2/blockchain/getBlockCount');
+
+    if (response.ok) {
+      const count = await response.json();
+
+      return count;
+    } else {
+      return 0;
+    }
+  } catch (error) {
+    console.log('Error while getting Block count: ', error);
+  }
+};
+
+export const getTrans = (slpTrans, bchTrans) => {
+  let res = [];
+  slpTrans.forEach(tx => {
+    res.push({ ...tx, isSLP: true });
+  });
+
+  bchTrans.forEach(tx => {
+    res.push({ ...tx, txid: tx.tx.h, isSLP: false });
+  });
+
+  res = _.uniqBy(res, 'txid');
+
+  return _.orderBy(res, ['blk.t'], ['desc']);
 };
