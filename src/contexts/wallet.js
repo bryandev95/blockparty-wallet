@@ -6,7 +6,10 @@ import { WalletContext } from 'contexts/WalletContext';
 import { sendToken, sendBCH, cleanTxDust, getUtxos, generateMnemonic } from './utils';
 import { importWallet } from './importWallet';
 
+import { cashExplorer } from 'constants/config';
+
 const bip39 = require('bip39');
+const explorer = require('bitcore-explorers');
 const slpjs = require('slpjs');
 
 const wallet = () => {
@@ -53,7 +56,7 @@ const wallet = () => {
     return balances.unconfirmedBalance;
   };
 
-  wallet.getSLPTokens = () => {
+  wallet.getSLPBalance = () => {
     return tokens;
   };
 
@@ -65,21 +68,33 @@ const wallet = () => {
 
   wallet.sendBCH = sendBCH;
 
-  window.wallet = wallet;
-
   wallet.cleanTxDust = cleanTxDust;
 
-  wallet.getUtxos = getUtxos;
+  wallet.getUtxos = async () => {
+    const utxos = await getUtxos(walletInfo.cashAddress);
+
+    console.log('Utxos', utxos);
+
+    return utxos;
+  };
 
   wallet.generateMnemonic = generateMnemonic;
 
   wallet.importWallet = importWallet;
+
+  wallet.broadcastTx = (tx, cb) => {
+    const insight = new explorer.Insight(cashExplorer);
+
+    insight.broadcast(tx.serialize(), cb);
+  };
 
   wallet.libs = {
     bip39,
     SLPSDK,
     slpjs
   };
+
+  window.blockparty = wallet;
 
   return <div />;
 };

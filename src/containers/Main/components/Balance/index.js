@@ -13,7 +13,7 @@ const Balance = ({ tokens, balances }) => {
     <div className={style.container}>
       <h4>{(balances.balance + balances.unconfirmedBalance).toFixed(8) || 0} BCH</h4>
 
-      {!!balances.tokens && !!tokens && !!tokens.length && (
+      {!!tokens && !!tokens.length && (
         <table className={style.table}>
           <thead>
             <tr>
@@ -45,10 +45,7 @@ const Balance = ({ tokens, balances }) => {
                     {token.id}
                   </a>
                 </td>
-                <td>
-                  {balances.tokens.find(item => item.tokenId === token.id) &&
-                    balances.tokens.find(item => item.tokenId === token.id).balance}
-                </td>
+                <td>{token.balance}</td>
               </tr>
             ))}
           </tbody>

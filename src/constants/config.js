@@ -1,4 +1,8 @@
 export const restURL = 'https://rest.bitcoin.com/v2/';
 export const tokenBaseUrl = 'https://tokens.bch.sx/64';
 export const cashExplorer = 'https://cashexplorer.bitcoin.com';
-export const socketServerUrl = 'https://genesis.bitdb.network/s/1FnauZ9aUH2Bex6JzdcV4eNX7oLSSEbxtN';
+export const slpDBUrl = 'https://nyc1.slpdb.io/q';
+export const bitDBUrl = 'https://bitdb.bch.sx/q';
+// export const slpSocketUrl = 'https://nyc1.slpdb.io/s';
+export const slpSocketUrl = 'https://slpsocket.fountainhead.cash/s';
+export const bitSocketUrl = 'https://bitdb.bch.sx/s';
