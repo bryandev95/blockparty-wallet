@@ -56,15 +56,6 @@ export const useWallet = () => {
   const [transactions, setTransactions] = useState([]);
 
   const openSlpSocket = ({ slpAddress }) => {
-    // const query = {
-    //   v: 3,
-    //   q: {
-    //     find: {
-    //       'in.e.a': slpAddress,
-    //       'out.e.a': slpAddress
-    //     }
-    //   }
-    // };
     const query = {
       v: 3,
       q: {
@@ -95,17 +86,21 @@ export const useWallet = () => {
 
     const socket = new EventSource(url);
 
-    socket.onmessage = () => {
-      setTimeout(() => {
-        update({
-          wallet: getWallet(),
-          setBalances,
-          setTransactions,
-          setTokens,
-          setLoading,
-          setCount
-        });
-      }, 1000);
+    socket.onmessage = message => {
+      const { data } = JSON.parse(message.data);
+
+      if (data.length) {
+        setTimeout(() => {
+          update({
+            wallet: getWallet(),
+            setBalances,
+            setTransactions,
+            setTokens,
+            setLoading,
+            setCount
+          });
+        }, 1000);
+      }
     };
   };
 
@@ -126,17 +121,28 @@ export const useWallet = () => {
 
     const socket = new EventSource(url);
 
-    socket.onmessage = () => {
-      update({
-        wallet: getWallet(),
-        setBalances,
-        setTransactions,
-        setTokens,
-        setLoading,
-        setCount
-      });
+    socket.onmessage = async message => {
+      const { data } = JSON.parse(message.data);
+
+      if (data.length) {
+        update(
+          {
+            wallet: getWallet(),
+            setBalances,
+            setTransactions,
+            setTokens,
+            setLoading,
+            setCount
+          },
+          1000
+        );
+      } else {
+        const count = await getBlockCount();
+        setCount(count);
+      }
     };
   };
+
   useEffect(() => {
     const w = getWallet();
     if (w) {

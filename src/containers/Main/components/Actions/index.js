@@ -26,6 +26,8 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
+  console.log('transactions', transactions);
+
   if (!transactions || !transactions.length)
     return <div className={style.noTransaction}>No transaction</div>;
   return (
@@ -49,38 +51,52 @@ const Actions = () => {
               ...tx,
               isSend: tx.in.some(el => addresses.includes(el.e.a))
             }))
-            .map(tx => (
-              <tr key={tx.txid}>
-                <td>{tx.blk ? formatDate(new Date(tx.blk.t * 1000)) : '-'}</td>
-                <td>
-                  <a
-                    href={`https://explorer.bitcoin.com/bch/tx/${tx.txid}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    {tx.txid}
-                  </a>
-                </td>
-                <td>{tx.blk ? count - tx.blk.i + 1 : 0}</td>
-                <td>{tx.in.length}</td>
-                <td>{tx.out.length}</td>
-                <td>
-                  <span
-                    className={cx(style.balance, {
-                      [style.minus]: tx.isSend
-                    })}
-                  >
-                    {tx.isSend ? '-' : '+'}
-                    {tx.out
-                      .filter(item => !addresses.includes(item.e.a))
-                      .map(item => item.e.v)
-                      .reduce((a, v) => a + v) /
-                      10 ** 8}
-                  </span>
-                </td>
-                <td>{`${tx.isSLP ? 'SLP' : 'BCH'} ${tx.isSend ? 'Send' : 'Receive'}`}</td>
-              </tr>
-            ))}
+            .map(tx => {
+              let txOut = 546;
+
+              if (!tx.isSLP) {
+                if (tx.isSend) {
+                  txOut = tx.out
+                    .filter(item => !addresses.includes(item.e.a))
+                    .map(item => item.e.v)
+                    .reduce((a, v) => a + v);
+                } else {
+                  txOut = tx.out
+                    .filter(item => addresses.includes(item.e.a))
+                    .map(item => item.e.v)
+                    .reduce((a, v) => a + v);
+                }
+              }
+
+              return (
+                <tr key={tx.txid}>
+                  <td>{tx.blk ? formatDate(new Date(tx.blk.t * 1000)) : '-'}</td>
+                  <td>
+                    <a
+                      href={`https://explorer.bitcoin.com/bch/tx/${tx.txid}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {tx.txid}
+                    </a>
+                  </td>
+                  <td>{tx.blk ? count - tx.blk.i + 1 : 0}</td>
+                  <td>{tx.in.length}</td>
+                  <td>{tx.out.length}</td>
+                  <td>
+                    <span
+                      className={cx(style.balance, {
+                        [style.minus]: tx.isSend
+                      })}
+                    >
+                      {tx.isSend ? '-' : '+'}
+                      {txOut / 10 ** 8}
+                    </span>
+                  </td>
+                  <td>{`${tx.isSLP ? 'SLP' : 'BCH'} ${tx.isSend ? 'Send' : 'Receive'}`}</td>
+                </tr>
+              );
+            })}
         </tbody>
       </table>
     </div>
