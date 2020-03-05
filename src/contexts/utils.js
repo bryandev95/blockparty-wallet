@@ -2,7 +2,7 @@ import SLPSDK from 'slp-sdk';
 import { bitcore } from 'slpjs';
 import _ from 'lodash';
 
-import { restURL, cashExplorer, slpDBUrl, slpDBUrl2, bitDBUrl } from 'constants/config';
+import { restURL, cashExplorer, slpDBUrl, bitDBUrl } from 'constants/config';
 
 const sb = require('satoshi-bitcoin');
 const explorer = require('bitcore-explorers');
@@ -146,9 +146,16 @@ export const getBCHTransactions = async cashAddress => {
     const query = {
       v: 3,
       q: {
+        db: ['c', 'u'],
         find: {
-          'in.e.a': cashAddress.slice(12),
-          'out.e.a': cashAddress.slice(12)
+          $or: [
+            {
+              'in.e.a': cashAddress.slice(12)
+            },
+            {
+              'out.e.a': cashAddress.slice(12)
+            }
+          ]
         }
       }
     };
@@ -294,7 +301,7 @@ export const getBlockCount = async () => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${slpDBUrl2}/${b64}`;
+    const url = `${slpDBUrl}/${b64}`;
 
     const response = await fetch(url);
 

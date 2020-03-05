@@ -26,8 +26,6 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
-  console.log('transactions', transactions);
-
   if (!transactions || !transactions.length)
     return <div className={style.noTransaction}>No transaction</div>;
   return (
@@ -52,21 +50,25 @@ const Actions = () => {
               isSend: tx.in.some(el => addresses.includes(el.e.a))
             }))
             .map(tx => {
-              let txOut = 546;
+              const myOutputs = tx.out
+                .filter(item => addresses.includes(item.e.a))
+                .map(item => item.e.v)
+                .reduce((a, v) => a + v);
 
-              if (!tx.isSLP) {
-                if (tx.isSend) {
-                  txOut = tx.out
-                    .filter(item => !addresses.includes(item.e.a))
-                    .map(item => item.e.v)
-                    .reduce((a, v) => a + v);
-                } else {
-                  txOut = tx.out
-                    .filter(item => addresses.includes(item.e.a))
-                    .map(item => item.e.v)
-                    .reduce((a, v) => a + v);
-                }
-              }
+              const inputTxs = tx.in
+                .map(({ e: { h, i } }) => {
+                  let temp = transactions.find(trans => trans.txid === h);
+                  return temp ? temp.out[i] : null;
+                })
+                .filter(item => !!item);
+
+              const myInputs = inputTxs.length
+                ? inputTxs.map(item => item.e.v).reduce((a, v) => a + v)
+                : 0;
+
+              let bchAmount = myOutputs - myInputs;
+
+              if (tx.isSLP && !tx.isSend) bchAmount = 546;
 
               return (
                 <tr key={tx.txid}>
@@ -89,8 +91,8 @@ const Actions = () => {
                         [style.minus]: tx.isSend
                       })}
                     >
-                      {tx.isSend ? '-' : '+'}
-                      {txOut / 10 ** 8}
+                      {!tx.isSend && '+'}
+                      {bchAmount / 10 ** 8}
                     </span>
                   </td>
                   <td>{`${tx.isSLP ? 'SLP' : 'BCH'} ${tx.isSend ? 'Send' : 'Receive'}`}</td>
