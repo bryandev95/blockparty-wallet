@@ -9,6 +9,9 @@ const explorer = require('bitcore-explorers');
 
 const SLP = new SLPSDK({ restURL });
 
+const slpBaseUrl = localStorage.getItem('slpBase') || slpDBUrl;
+const bchBaseUrl = localStorage.getItem('bchBase') || bitDBUrl;
+
 export const getSLP = () => {
   return SLP;
 };
@@ -68,7 +71,7 @@ export const getTokenInfo = async slpAddress => {
 
   const b64 = btoa(JSON.stringify(query));
 
-  const url = `${slpDBUrl}/${b64}`;
+  const url = `${slpBaseUrl}/${b64}`;
 
   try {
     const response = await fetch(url);
@@ -126,7 +129,7 @@ export const getSLPTransactions = async slpAddress => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${slpDBUrl}/${b64}`;
+    const url = `${slpBaseUrl}/${b64}`;
 
     const response = await fetch(url);
     if (response.ok) {
@@ -162,7 +165,7 @@ export const getBCHTransactions = async cashAddress => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${bitDBUrl}/${b64}`;
+    const url = `${bchBaseUrl}/${b64}`;
 
     const response = await fetch(url);
     if (response.ok) {
@@ -301,7 +304,7 @@ export const getBlockCount = async () => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${slpDBUrl}/${b64}`;
+    const url = `${slpBaseUrl}/${b64}`;
 
     const response = await fetch(url);
 

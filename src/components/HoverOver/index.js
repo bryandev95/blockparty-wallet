@@ -1,13 +1,38 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 
 import { MdClose, MdExitToApp } from 'react-icons/md';
 import Button from 'components/Button';
+import Input from 'components/Input';
+
+import { slpSocketUrl, bitSocketUrl, slpDBUrl, bitDBUrl } from 'constants/config';
 
 import style from './style.module.scss';
 
 const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
+  const [form, setForm] = useState({
+    bchBase: localStorage.getItem('bchBase') || bitDBUrl,
+    slpBase: localStorage.getItem('slpBase') || slpDBUrl,
+    bchSocket: localStorage.getItem('bitSocket') || bitSocketUrl,
+    slpSocket: localStorage.getItem('slpSocket') || slpSocketUrl
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+
+    setForm(p => ({ ...p, [name]: value }));
+  };
+
+  const handleSubmit = () => {
+    const { bchBase, slpBase, bchSocket, slpSocket } = form;
+
+    if (bchBase) localStorage.setItem('bchBase', bchBase);
+    if (slpBase) localStorage.setItem('slpBase', slpBase);
+    if (bchSocket) localStorage.setItem('bchSocket', bchSocket);
+    if (slpSocket) localStorage.setItem('slpSocket', slpSocket);
+  };
+
   const renderInfo = () => {
     return (
       <React.Fragment>
@@ -32,7 +57,6 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
   };
 
   const renderSettings = () => {
-    const commitHash = 'e671837298f2c19b682778c0bd9942a411c00a0a';
     return (
       <React.Fragment>
         <h2>
@@ -47,15 +71,42 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
           </span>
         </Button>
 
+        <div className={style.body}>
+          <div className={style.formField}>
+            <label>BCH Base Url</label>
+            <br />
+            <Input name="bchBase" value={form.bchBase} onChange={handleChange} />
+          </div>
+
+          <div className={style.formField}>
+            <label>SLP Base Url</label>
+            <br />
+            <Input name="slpBase" value={form.slpBase} onChange={handleChange} />
+          </div>
+
+          <div className={style.formField}>
+            <label>BCH Socket Url</label>
+            <br />
+            <Input name="bchSocket" value={form.bchSocket} onChange={handleChange} />
+          </div>
+
+          <div className={style.formField}>
+            <label>SLP Socket Url</label>
+            <br />
+            <Input name="slpSocket" value={form.slpSocket} onChange={handleChange} />
+          </div>
+
+          <div className={style.submit}>
+            <Button color="success" onClick={handleSubmit}>
+              <span>Update</span>
+            </Button>
+          </div>
+        </div>
+
         <div className={style.footer}>
-          <label>blockparty wallet</label>
-          <br />
-          <span>
-            commit
-            <a href={`https://github.com/coldflame426/blockparty-wallet/commit/${commitHash}`}>
-              {commitHash}
-            </a>
-          </span>
+          <a href={'https://github.com/coldflame426/blockparty-wallet/'}>
+            <label>Blockparty wallet</label>
+          </a>
         </div>
       </React.Fragment>
     );

@@ -1,4 +1,4 @@
-@import 'constants/colors.scss';
+@import "constants/colors.scss";
 
 .container {
   background: $color_white;
@@ -34,7 +34,7 @@
 
     a {
       color: $color_blue;
-  
+
       &:hover {
         color: $color_blue;
       }
@@ -52,26 +52,43 @@
     }
   }
 
+  .body {
+    margin-top: 20px;
+
+    .formField {
+      margin-bottom: 20px;
+
+      label {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 500;
+        color: $color_light_black;
+      }
+
+      a {
+        color: #2d7cc2;
+        font-size: 14px;
+        margin-left: 10px;
+        cursor: pointer;
+        float: right;
+      }
+    }
+
+    .submit {
+      padding-top: 10px;
+      text-align: center;
+    }
+  }
+
   .footer {
     position: absolute;
-    bottom: 10px;
+    bottom: 5px;
+    right: 20px;
 
     label {
       color: $color_blue;
-      margin-bottom: 0;
-    }
-
-    span {
-      font-size: 13px;
-
-      a {
-        color: $color_blue;
-        margin-left: 10px;
-
-        &:hover {
-          text-decoration: none;
-        }
-      }
+      font-size: 14px;
+      cursor: pointer;
     }
   }
 }

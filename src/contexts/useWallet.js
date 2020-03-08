@@ -12,6 +12,9 @@ import {
 } from './utils';
 import { slpSocketUrl, bitSocketUrl } from 'constants/config';
 
+const bchSocket = localStorage.getItem('bchSocket') || bitSocketUrl;
+const slpSocket = localStorage.getItem('slpSocket') || slpSocketUrl;
+
 const update = async ({
   wallet,
   setBalances,
@@ -82,7 +85,7 @@ export const useWallet = () => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${slpSocketUrl}/${b64}`;
+    const url = `${slpSocket}/${b64}`;
 
     const socket = new EventSource(url);
 
@@ -117,7 +120,7 @@ export const useWallet = () => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${bitSocketUrl}/${b64}`;
+    const url = `${bchSocket}/${b64}`;
 
     const socket = new EventSource(url);
 
