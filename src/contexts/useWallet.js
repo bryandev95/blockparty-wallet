@@ -112,8 +112,14 @@ export const useWallet = () => {
       v: 3,
       q: {
         find: {
-          'in.e.a': cashAddress.slice(12),
-          'out.e.a': cashAddress.slice(12)
+          $or: [
+            {
+              'in.e.a': cashAddress.slice(12)
+            },
+            {
+              'out.e.a': cashAddress.slice(12)
+            }
+          ]
         }
       }
     };
