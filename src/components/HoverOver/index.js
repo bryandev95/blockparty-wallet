@@ -73,25 +73,61 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
 
         <div className={style.body}>
           <div className={style.formField}>
-            <label>BCH Base Url</label>
+            <label>
+              BitServe Base Url{' '}
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/fountainhead-cash/bitserve"
+              >
+                (source)
+              </a>
+            </label>
             <br />
             <Input name="bchBase" value={form.bchBase} onChange={handleChange} />
           </div>
 
           <div className={style.formField}>
-            <label>SLP Base Url</label>
+            <label>
+              SlpServe Base Url
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/fountainhead-cash/slpserve"
+              >
+                (source)
+              </a>
+            </label>
             <br />
             <Input name="slpBase" value={form.slpBase} onChange={handleChange} />
           </div>
 
           <div className={style.formField}>
-            <label>BCH Socket Url</label>
+            <label>
+              BCH SocketServe Base Url
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/fountainhead-cash/sockserve"
+              >
+                (source)
+              </a>
+            </label>
             <br />
             <Input name="bchSocket" value={form.bchSocket} onChange={handleChange} />
           </div>
 
           <div className={style.formField}>
-            <label>SLP Socket Url</label>
+            <label>
+              SlpSocketServe Base Url
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://github.com/fountainhead-cash/slpsockserve"
+              >
+                (source)
+              </a>
+            </label>
             <br />
             <Input name="slpSocket" value={form.slpSocket} onChange={handleChange} />
           </div>

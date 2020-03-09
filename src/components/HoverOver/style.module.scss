@@ -63,12 +63,16 @@
         font-size: 14px;
         font-weight: 500;
         color: $color_light_black;
+
+        a {
+          text-decoration: none;
+        }
       }
 
       a {
         color: #2d7cc2;
         font-size: 14px;
-        margin-left: 10px;
+        margin-left: 5px;
         cursor: pointer;
         float: right;
       }

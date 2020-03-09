@@ -1,6 +1,7 @@
 import React, { useState, useContext } from 'react';
 
 import { WalletContext } from 'contexts/WalletContext';
+import cx from 'classnames';
 
 import Header from './containers/Header';
 import HoverOver from './components/HoverOver';
@@ -8,14 +9,25 @@ import Main from './containers/Main';
 import OnBoarding from './containers/OnBoarding';
 import Wallet from './contexts/wallet';
 
-import styles from './app.module.scss';
+import style from './app.module.scss';
 
 function App() {
   const [showInfo, setShowInfo] = useState(false);
+  const [isMinimized, setMinimized] = useState(false);
   const { isLoading, wallet, balances, tokens, logout } = useContext(WalletContext);
 
   const toggleShowInfo = () => {
-    setShowInfo(!showInfo);
+    if (!isMinimized) setShowInfo(!showInfo);
+    else {
+      setMinimized(false);
+      setTimeout(() => {
+        setShowInfo(true);
+      }, 200);
+    }
+  };
+
+  const toggleMinimize = () => {
+    setMinimized(!isMinimized);
   };
 
   const handleLogout = () => {
@@ -23,15 +35,19 @@ function App() {
     toggleShowInfo();
   };
 
-  return (
-    <div className={styles.app}>
-      <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} />
+  const renderBody = () => {
+    if (wallet) {
+      return <Main isLoading={isLoading} tokens={tokens} balances={balances} wallet={wallet} />;
+    } else {
+      return <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />;
+    }
+  };
 
-      {wallet ? (
-        <Main isLoading={isLoading} tokens={tokens} balances={balances} wallet={wallet} />
-      ) : (
-        <OnBoarding showInfo={showInfo} onToggle={toggleShowInfo} />
-      )}
+  return (
+    <div className={cx(style.app, { [style.min]: isMinimized })}>
+      <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} onToggleMinimize={toggleMinimize} />
+
+      {renderBody()}
 
       <HoverOver
         isLoggedIn={!!wallet}

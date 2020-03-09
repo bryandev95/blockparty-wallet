@@ -26,8 +26,6 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
-  console.log(transactions);
-
   if (!transactions || !transactions.length)
     return <div className={style.noTransaction}>No transaction</div>;
   return (

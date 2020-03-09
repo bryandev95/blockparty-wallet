@@ -5,10 +5,10 @@ import { MdHelp, MdSettings } from 'react-icons/md';
 
 import style from './style.module.scss';
 
-const Header = ({ isLoggedIn, onToggle }) => {
+const Header = ({ isLoggedIn, onToggle, onToggleMinimize }) => {
   return (
     <div className={style.header}>
-      BlockParty Wallet
+      <span onClick={onToggleMinimize}>BlockParty Wallet</span>
       <div className={style.info}>
         {isLoggedIn ? <MdSettings onClick={onToggle} /> : <MdHelp onClick={onToggle} />}
       </div>
@@ -18,7 +18,8 @@ const Header = ({ isLoggedIn, onToggle }) => {
 
 Header.propTypes = {
   isLoggedIn: PropTypes.bool.isRequired,
-  onToggle: PropTypes.func.isRequired
+  onToggle: PropTypes.func.isRequired,
+  onToggleMinimize: PropTypes.func.isRequired
 };
 
 export default Header;

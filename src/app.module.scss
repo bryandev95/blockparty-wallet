@@ -10,4 +10,10 @@
   box-shadow: 0 0 6px transparentize($color_black, 0.8);
   background: $color_light_grey;
   overflow: hidden;
+  transition: 0.5s;
+
+  &.min {
+    height: 61px;
+    border-radius: 10px 10px 0 0;
+  }
 }
