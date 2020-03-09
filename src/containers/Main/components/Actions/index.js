@@ -26,6 +26,8 @@ const Actions = () => {
     return `${year}-${month < 10 ? '0' : ''}${month}-${day} ${hours}:${minutes}`;
   };
 
+  console.log(transactions);
+
   if (!transactions || !transactions.length)
     return <div className={style.noTransaction}>No transaction</div>;
   return (
@@ -50,10 +52,11 @@ const Actions = () => {
               isSend: tx.in.some(el => addresses.includes(el.e.a))
             }))
             .map(tx => {
-              const myOutputs = tx.out
-                .filter(item => addresses.includes(item.e.a))
-                .map(item => item.e.v)
-                .reduce((a, v) => a + v);
+              const outputTxs = tx.out.filter(item => addresses.includes(item.e.a));
+
+              const myOutputs = outputTxs.length
+                ? outputTxs.map(item => item.e.v).reduce((a, v) => a + v)
+                : 0;
 
               const inputTxs = tx.in
                 .map(({ e: { h, i } }) => {
