@@ -27,7 +27,7 @@ const Generate = ({ mnemonic }) => {
   };
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <p>
         Ensure you save these words and keep them safe, they are the key to your new wallet. Without
         them, your money will be lost forever. Go to Import after saving.

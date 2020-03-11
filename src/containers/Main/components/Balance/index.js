@@ -10,7 +10,7 @@ import style from './style.module.scss';
 
 const Balance = ({ tokens, balances }) => {
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <h4>{(balances.balance + balances.unconfirmedBalance).toFixed(8) || 0} BCH</h4>
 
       {!!tokens && !!tokens.length && (

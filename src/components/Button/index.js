@@ -18,7 +18,7 @@ const Button = ({ round, disabled, color, block, outline, children, onClick }) =
       disabled={disabled}
       outline={outline}
       block={block}
-      className={cx({ 'btn-round': round })}
+      className={cx('blockparty-wallet-btn', { ['btn-round']: round })}
       onClick={onClick}
     >
       {children}
@@ -50,8 +50,7 @@ Button.defaultProps = {
   color: 'primary',
   disabled: false,
   outline: false,
-  round: false,
-  onClick: () => {}
+  round: false
 };
 
 export default Button;

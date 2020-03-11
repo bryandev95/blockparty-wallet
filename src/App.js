@@ -44,7 +44,7 @@ function App() {
   };
 
   return (
-    <div className={cx(style.app, { [style.min]: isMinimized })}>
+    <div className={cx(style['blockparty-wallet-app'], { [style.min]: isMinimized })}>
       <Header isLoggedIn={!!wallet} onToggle={toggleShowInfo} onToggleMinimize={toggleMinimize} />
 
       {renderBody()}

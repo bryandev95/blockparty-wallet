@@ -20,7 +20,7 @@ const Main = ({ isLoading, balances, tokens, wallet }) => {
   const [activeTab, setActiveTab] = useState(ACTIONS);
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <Nav tabs>
         <NavItem>
           <NavLink

@@ -22,7 +22,7 @@ const OnBoarding = () => {
   }, []);
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <Nav tabs>
         <NavItem>
           <NavLink

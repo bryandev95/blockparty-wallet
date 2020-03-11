@@ -10,7 +10,7 @@ const InputField = ({ iconSrc, info, noBorder, ...rest }) => {
   const [isVisible, setVisible] = useState(false);
 
   return (
-    <div className={style.container} onMouseLeave={() => setVisible(false)}>
+    <div className={style['bpw-container']} onMouseLeave={() => setVisible(false)}>
       <input
         {...rest}
         className={cx(

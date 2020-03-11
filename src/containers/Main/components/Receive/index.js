@@ -17,7 +17,7 @@ const Receive = ({ wallet }) => {
   };
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <p>{wallet[address]}</p>
 
       <QRCode address={address} wallet={wallet} />
