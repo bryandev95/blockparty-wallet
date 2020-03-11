@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import { bitcore } from 'slpjs';
 
 import Notification from 'react-web-notification';
 
@@ -83,15 +84,19 @@ const Send = ({ tokens, balances, wallet }) => {
           setErrors(err.message);
         });
     } else {
-      sendBCH(wallet, address, amount, err => {
-        if (err) {
-          setLoading(false);
-          setErrors(err.message || err);
-        } else {
-          setLoading(false);
-          setTitle('Transaction successful.');
-        }
-      });
+      if (bitcore.Address.isValid(address)) {
+        sendBCH(wallet, address, amount, err => {
+          if (err) {
+            setLoading(false);
+            setErrors(err.message || err);
+          } else {
+            setLoading(false);
+            setTitle('Transaction successful.');
+          }
+        });
+      } else {
+        setErrors('Invalid address');
+      }
     }
   };
 

@@ -173,5 +173,8 @@
     "presets": [
       "react-app"
     ]
+  },
+  "devDependencies": {
+    "uglifyjs-webpack-plugin": "^2.2.0"
   }
 }
