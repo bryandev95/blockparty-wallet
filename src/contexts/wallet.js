@@ -64,9 +64,16 @@ const wallet = () => {
     return transactions;
   };
 
-  wallet.sendToken = sendToken;
+  wallet.sendToken = (address, tokenId, amount) =>
+    sendToken(walletInfo, {
+      address,
+      type: tokenId,
+      amount
+    });
 
-  wallet.sendBCH = sendBCH;
+  wallet.sendBCH = (receiverAddress, amount) => {
+    sendBCH(walletInfo, receiverAddress, amount, () => {});
+  };
 
   wallet.cleanTxDust = cleanTxDust;
 

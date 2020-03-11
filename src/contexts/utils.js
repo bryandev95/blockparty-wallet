@@ -237,27 +237,23 @@ export const sendToken = (wallet, payload) => {
 export const sendBCH = async (wallet, receiverAddress, amount, cb) => {
   try {
     const { cashAddress, fundingWif } = wallet;
-    if (bitcore.Address.isValid(receiverAddress)) {
-      const privateKey = bitcore.PrivateKey(fundingWif);
-      const satoshis = sb.toSatoshi(amount) | 0;
+    const privateKey = bitcore.PrivateKey(fundingWif);
+    const satoshis = sb.toSatoshi(amount) | 0;
 
-      let tx = bitcore.Transaction();
+    let tx = bitcore.Transaction();
 
-      const utxos = await getUtxos(cashAddress);
-      tx.from(utxos);
-      tx.to(receiverAddress, satoshis);
-      tx.feePerKb(1500);
-      tx.change(privateKey.toAddress());
+    const utxos = await getUtxos(cashAddress);
+    tx.from(utxos);
+    tx.to(receiverAddress, satoshis);
+    tx.feePerKb(1500);
+    tx.change(privateKey.toAddress());
 
-      tx = cleanTxDust(tx);
-      tx.sign(privateKey);
+    tx = cleanTxDust(tx);
+    tx.sign(privateKey);
 
-      const insight = new explorer.Insight(cashExplorer);
+    const insight = new explorer.Insight(cashExplorer);
 
-      insight.broadcast(tx.serialize(), cb);
-    } else {
-      throw { message: 'Invalid address' };
-    }
+    insight.broadcast(tx.serialize(), cb);
   } catch (err) {
     console.log('Error in sending BCH : ', err);
     cb(err);
