@@ -96,7 +96,7 @@ const Send = ({ tokens, balances, wallet }) => {
   };
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <div className={style.form}>
         <div className={style.formField}>
           <label>Select BCH or any other SLP token you'd like to send</label>

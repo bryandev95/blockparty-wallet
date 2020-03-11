@@ -63,7 +63,7 @@ const Import = ({ onImport }) => {
   };
 
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <div className={style.form}>
         <div className={style.formField}>
           <label>Type the 12 word phrase you downloaded when generating the wallet</label>

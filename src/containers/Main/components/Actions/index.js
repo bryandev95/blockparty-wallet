@@ -27,9 +27,9 @@ const Actions = () => {
   };
 
   if (!transactions || !transactions.length)
-    return <div className={style.noTransaction}>No transaction</div>;
+    return <div className={style['bpw-noTransaction']}>No transaction</div>;
   return (
-    <div className={style.container}>
+    <div className={style['bpw-container']}>
       <table className={style.table}>
         <thead>
           <tr>

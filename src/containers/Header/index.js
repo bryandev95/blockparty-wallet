@@ -7,7 +7,7 @@ import style from './style.module.scss';
 
 const Header = ({ isLoggedIn, onToggle, onToggleMinimize }) => {
   return (
-    <div className={style.header}>
+    <div className={style['bpw-header']}>
       <span onClick={onToggleMinimize}>BlockParty Wallet</span>
       <div className={style.info}>
         {isLoggedIn ? <MdSettings onClick={onToggle} /> : <MdHelp onClick={onToggle} />}

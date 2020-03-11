@@ -1,6 +1,6 @@
-@import 'constants/colors.scss';
+@import "constants/colors.scss";
 
-.container {
+.bpw-container {
   li {
     width: 25%;
 
@@ -34,14 +34,14 @@
     height: 453px;
     overflow: auto;
     position: relative;
-  
+
     .loaderContainer {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba($color_white, .8);
+      background-color: rgba($color_white, 0.8);
       display: flex;
       align-items: center;
       justify-content: center;

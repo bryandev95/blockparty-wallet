@@ -149,7 +149,7 @@ const HoverOver = ({ isLoggedIn, showInfo, onToggle, onLogout }) => {
   };
 
   return (
-    <div className={cx(style.container, { [style.active]: showInfo })}>
+    <div className={cx(style['bpw-container'], { [style.active]: showInfo })}>
       {!isLoggedIn ? renderInfo() : renderSettings()}
     </div>
   );
