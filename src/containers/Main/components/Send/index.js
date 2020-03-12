@@ -29,7 +29,7 @@ const Send = ({ tokens, balances, wallet }) => {
       return options;
     } else {
       tokens.forEach(token => {
-        options.push({ label: token.name, value: token.id });
+        options.push({ label: `${token.name} (${token.id})`, value: token.id });
       });
 
       return options;
