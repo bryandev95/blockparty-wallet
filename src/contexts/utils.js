@@ -1,5 +1,6 @@
 import SLPSDK from 'slp-sdk';
-import { bitcore } from 'slpjs';
+import { BITBOX } from 'bitbox-sdk';
+import { bitcore, Slp } from 'slpjs';
 import _ from 'lodash';
 
 import { restURL, cashExplorer, slpDBUrl, bitDBUrl } from 'constants/config';
@@ -11,7 +12,8 @@ const SLP = new SLPSDK({ restURL });
 
 const slpBaseUrl = localStorage.getItem('slpBase') || slpDBUrl;
 const bchBaseUrl = localStorage.getItem('bchBase') || bitDBUrl;
-const bitBoxUrl = 'https://rest.bitbox.earth/v1/';
+const bitbox = new BITBOX({ restURL });
+const slp = new Slp(bitbox);
 
 export const getSLP = () => {
   return SLP;
@@ -273,23 +275,29 @@ export const cleanTxDust = tx => {
 };
 
 export const getUtxos = async address => {
-  const url = `${bitBoxUrl}address/utxo/${address}`;
+  const url = `${restURL}address/utxo/${address}`;
 
   const response = await fetch(url, { headers: {} });
-  console.log('response', response);
   const data = await response.json();
-  console.log('data', data);
-  const utxos = data.map(item => ({
-    txid: item['txid'],
-    satoshis: item['satoshis'],
-    script: item['scriptPubKey'],
-    vout: item['vout'],
-    address: item['cashAddress']
+  const utxos = data.utxos.map(item => ({
+    txid: item.txid,
+    satoshis: item.satoshis,
+    script: data.scriptPubKey,
+    vout: item.vout,
+    address: data.cashAddress
   }));
-  console.log('utxos', utxos);
 
-  utxos.sort((a, b) => (a.satoshis > b.satoshis ? 1 : a.satoshis < b.satoshis ? -1 : 0));
-  return utxos;
+  const result = [];
+  utxos.forEach(utxo => {
+    try {
+      slp.parseSlpOutputScript(utxo.script);
+    } catch (e) {
+      result.push(utxo);
+    }
+  });
+
+  result.sort((a, b) => (a.satoshis > b.satoshis ? 1 : a.satoshis < b.satoshis ? -1 : 0));
+  return result;
 };
 
 export const getBlockCount = async () => {
