@@ -31,6 +31,9 @@ const DropdownSelect = ({ placeholder, defaultValue, options, onChange }) => {
     }),
     option: (provided, state) => ({
       ...provided,
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      width: '100%',
       fontSize: 14,
       backgroundColor: state.isSelected ? $color_green : $color_white,
       color: state.isSelected ? $color_white : $text_color,

@@ -11,6 +11,7 @@ const SLP = new SLPSDK({ restURL });
 
 const slpBaseUrl = localStorage.getItem('slpBase') || slpDBUrl;
 const bchBaseUrl = localStorage.getItem('bchBase') || bitDBUrl;
+const bitBoxUrl = 'https://rest.bitbox.earth/v1/';
 
 export const getSLP = () => {
   return SLP;
@@ -272,18 +273,22 @@ export const cleanTxDust = tx => {
 };
 
 export const getUtxos = async address => {
-  const utxo = await SLP.Address.utxo(address);
+  const url = `${bitBoxUrl}address/utxo/${address}`;
 
-  const utxos = utxo.utxos.map(item => ({
-    txId: item.txid,
-    address,
-    outputIndex: item.vout,
-    script: utxo.scriptPubKey,
-    satoshis: item.satoshis
+  const response = await fetch(url, { headers: {} });
+  console.log('response', response);
+  const data = await response.json();
+  console.log('data', data);
+  const utxos = data.map(item => ({
+    txid: item['txid'],
+    satoshis: item['satoshis'],
+    script: item['scriptPubKey'],
+    vout: item['vout'],
+    address: item['cashAddress']
   }));
+  console.log('utxos', utxos);
 
   utxos.sort((a, b) => (a.satoshis > b.satoshis ? 1 : a.satoshis < b.satoshis ? -1 : 0));
-
   return utxos;
 };
 
