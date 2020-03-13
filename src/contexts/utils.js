@@ -287,12 +287,26 @@ export const getUtxos = async address => {
     address: data.cashAddress
   }));
 
+  // Remove any potential SLP utxos (NOTE: these may include invalid SLP utxos)
   const result = [];
   utxos.forEach(utxo => {
+    let slpMsg;
     try {
-      slp.parseSlpOutputScript(utxo.script);
+      slpMsg = slp.parseSlpOutputScript(utxo.script);
     } catch (e) {
       result.push(utxo);
+    }
+    if (slpMsg) {
+      if (
+        ['GENESIS', 'MINT'].includes(slpMsg.transactionType) &&
+        ![1, slpMsg.batonVout].includes(utxo.vout)
+      ) {
+        result.push(utxo);
+      } else if (slpMsg.transactionType === 'SEND' && !slpMsg.sendOutputs.includes(utxo.vout)) {
+        result.push(utxo);
+      } else {
+        throw Error('Unknown transaction type.');
+      }
     }
   });
 
