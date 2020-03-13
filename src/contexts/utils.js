@@ -302,7 +302,10 @@ export const getUtxos = async address => {
         ![1, slpMsg.batonVout].includes(utxo.vout)
       ) {
         result.push(utxo);
-      } else if (slpMsg.transactionType === 'SEND' && !slpMsg.sendOutputs.includes(utxo.vout)) {
+      } else if (
+        slpMsg.transactionType === 'SEND' &&
+        (!slpMsg.sendOutputs || (slpMsg.sendOutputs && utxo.vout >= slpMsg.sendOutputs.length))
+      ) {
         result.push(utxo);
       } else {
         throw Error('Unknown transaction type.');
