@@ -3,7 +3,7 @@ import { BITBOX } from 'bitbox-sdk';
 import { bitcore, Slp } from 'slpjs';
 import _ from 'lodash';
 
-import { restURL, cashExplorer, slpDBUrl, bitDBUrl } from 'constants/config';
+import { restURL, cashExplorer, slpDBUrl, slpDBUrl2, bitDBUrl } from 'constants/config';
 
 const sb = require('satoshi-bitcoin');
 const explorer = require('bitcore-explorers');
@@ -330,7 +330,7 @@ export const getBlockCount = async () => {
 
     const b64 = btoa(JSON.stringify(query));
 
-    const url = `${slpBaseUrl}/${b64}`;
+    const url = `${slpDBUrl2}/${b64}`;
 
     const response = await fetch(url);
 
